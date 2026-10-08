@@ -1,0 +1,80 @@
+# Configuration uvm_lint — toutes les clés sont optionnelles (valeurs par défaut indiquées)
+
+# Classes de base qui font d'une classe un « checker »
+checker_bases = ["checker_base", "uvm_scoreboard", "uvm_subscriber"]
+
+# Classes de base qui font d'une classe un test
+test_bases = ["uvm_test"]
+
+# Seules ces classes (et leurs dérivées) peuvent lever des objections
+objection_allowed_bases = ["uvm_test", "uvm_sequence_base"]
+
+# Packages de tests/séquences (glob) : aucun checker ne doit en dépendre
+test_packages = ["*_test_pkg", "*_tests_pkg", "*_seq_pkg"]
+
+# Code exclu de l'analyse : IP tierces, VIP achetées, code généré (RAL...)
+exclude_paths = ["*/vip/*", "*/generated/*"]
+exclude_packages = []
+
+# Entités de vérification : nom = globs de chemins (première correspondance gagne).
+# Fichiers non couverts : package SV qui les contient ("package") ou dossier parent ("dir").
+entity_default = "package"
+
+# Fichiers du DUT (section DUT du tableau de bord) et entité par défaut : "module" ou "dir"
+dut_paths = ["*/rtl/*", "*/hdl/*", "*/design/*"]
+dut_entity_default = "module"
+# Fenêtre d'activité git (jours) pour --kpi-git
+churn_days = 30
+
+[entities]
+# "Agent AXI" = ["*/agents/axi/*"]
+# "Env DMA"   = ["*/env/dma/*", "*/tests/dma/*"]
+
+[naming]
+message_id = '^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$'
+message_macros = ["uvm_error", "uvm_fatal"]
+
+[naming.classes]
+checker   = '^[a-z][a-z0-9_]*_(sb|chk|pred)$'
+test      = '^[a-z][a-z0-9_]*_test$'
+env       = '^[a-z][a-z0-9_]*_env$'
+agent     = '^[a-z][a-z0-9_]*_agent$'
+driver    = '^[a-z][a-z0-9_]*_(drv|driver)$'
+monitor   = '^[a-z][a-z0-9_]*_(mon|monitor)$'
+sequencer = '^[a-z][a-z0-9_]*_(sqr|sequencer)$'
+sequence  = '^[a-z][a-z0-9_]*_(seq|vseq)$'
+item      = '^[a-z][a-z0-9_]*_(item|txn|tr)$'
+
+# CHK-COMMENTED : ce qui est un « check » quand on le trouve en commentaire (label = regex)
+# (s'ajoute aux motifs par défaut ; même label = remplacement ; les classes checkers sont ajoutées automatiquement)
+# [commented_checks]
+# "`uvm_error/`uvm_fatal" = '`uvm_(error|fatal)\s*\('
+# "assertion"             = '\b(assert|assume)\s*(property|final|#0)?\s*\('
+# "count_check"           = '\bcount_check\s*\('
+# "compare"               = '\.compare\s*\('
+# "macro de check"        = '`\w*CHECK\w*\s*\('
+# "connexion au checker"  = '\.connect\s*\([^)]*\b\w*(sb|scoreboard|chk|checker)\w*'
+
+# Marqueurs de travail en cours comptés dans les commentaires (mots entiers)
+markers = ["TODO", "FIXME", "TBC", "TBD", "XXX", "HACK", "BUG", "KLUDGE", "WIP", "A FAIRE", "À FAIRE"]
+markers_case_sensitive = true
+
+# KPI : seuils des feux (fusionnés avec les valeurs par défaut)
+[kpi.thresholds]
+errors_per_kloc  = { amber_above = 0, red_above = 2 }
+factory_pct      = { amber_below = 100, red_below = 90 }
+msg_id_pct       = { amber_below = 95, red_below = 80 }
+commented_checks = { red_above = 0 }
+disabled_checks  = { red_above = 0 }
+wa_active        = { amber_above = 0 }
+wa_dead          = { amber_above = 0 }
+baselined        = { amber_above = 0 }
+# waivers        = { amber_above = 10 }
+# markers        = { amber_above = 20 }
+"dut.always_latch"   = { amber_above = 0 }
+"dut.slang_warnings" = { amber_above = 0, red_above = 20 }
+
+# Sévérité par règle : "error", "warning" ou "off"
+[rules]
+# "UVM-OBJECTION-LOCATION" = "error"
+# "NAME-CLASS" = "off"
